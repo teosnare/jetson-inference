@@ -21,6 +21,7 @@
  */
 
 #include "gstCamera.h"
+#include "gstPipeline.h"
 
 #include "glDisplay.h"
 #include "glTexture.h"
@@ -35,7 +36,8 @@
 
 #include "detectNet.h"
 
-
+#define CAM_WIDTH 1920
+#define CAM_HEIGHT 1080
 #define DEFAULT_CAMERA -1	// -1 for onboard camera, or change to index of /dev/video V4L2 camera (>=0)	
 		
 
@@ -83,8 +85,12 @@ int main( int argc, char** argv )
 	/*
 	 * create the camera device
 	 */
-	gstCamera* camera = gstCamera::Create(DEFAULT_CAMERA);
-	
+	const char * mLaunchStr = "rtspsrc location=rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov ! queue ! rtph264depay ! h264parse ! queue ! omxh264dec ! appsink name=mysink";
+	gstPipeline * camera = gstPipeline::Create(mLaunchStr, 240, 160, 12);
+	 
+	//gstCamera* camera = gstCamera::Create(DEFAULT_CAMERA);
+	//gstCamera* camera = gstCamera::Create(CAM_WIDTH, CAM_HEIGHT, DEFAULT_CAMERA);
+		
 	if( !camera )
 	{
 		printf("\ndetectnet-camera:  failed to initialize video device\n");
